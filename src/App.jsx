@@ -3,32 +3,38 @@ import { useEffect, useState } from 'react'
 import { api } from './constants/api'
 
 import logo from '/logo.png'
+import { Card } from './components/card'
 
 function App() {
   const [data, setData] = useState([])
+  const [page, setPage] = useState()
+  const [inputPage, setInputPage] = useState("")
+
 
   useEffect(() => {
-    api.get(`/character`).then((response) => {
-        setData(response.data.results)
-    }).catch((error) => {
-      console.error("Deu ruim!!!", error)
-    })
-  }, [])
+   const carrega = async () => {
+    try{
+      const response = await api.get(`/character/?page=${page}`)
+      setData(response.data.results)
+    }catch{
+      console.error("Deu ruim!!!")
+    }
+   }
+   carrega()
+  }, [page])
   
-
   return (
     <>
       <img className={s.logo} src={logo} alt="Logo" />
+    <div>
+      <label>Digite uma página</label>
+      <input min={1} max={42} type="number" placeholder='1/42' value={inputPage} onChange={(e) => setInputPage(e.target.value)}/>
+      <button onClick={() => setPage(Number(inputPage))}>BUSCAR</button>
+    </div>
       <main>
-        {data.map((item, index) => {
+        {data.map(item => {
           return(
-            <div key={index}>
-                <img src={item.image} alt={item.name} />
-                <h4>Name: {item.name}</h4>
-                <p>Species: {item.species}</p>
-                {item.status === "Dead" ? "Status:🧟" : item.status === "Alive" ? "Status: 😊" : <p>Status: {item.status}</p>}
-                <p>Origin: {item.origin.name}</p>
-            </div>
+           <Card unico={item.id} imagem={item.image} nome={item.name} especie={item.species} origem={item.origin.name}/>
           )
         })}
       </main>

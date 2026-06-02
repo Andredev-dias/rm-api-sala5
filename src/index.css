@@ -13,9 +13,16 @@ body{
   background-attachment: fixed;
 }
 
+main{
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 50px;
+}
+
 @media (width <= 1000px){
   body{
   background-image: url('/bgMobile.jpg');
-
 }
 }
